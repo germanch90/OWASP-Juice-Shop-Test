@@ -1,0 +1,15 @@
+# Node
+node_modules/
+package-lock.json
+.env
+
+# Playwright outputs
+playwright-report/
+test-results/
+playwright-results.json
+trace.zip
+*.log
+
+# IDE
+.vscode/
+.idea/
