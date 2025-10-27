@@ -1,0 +1,13 @@
+FROM mcr.microsoft.com/playwright:v1.48.0-jammy
+
+# System prep
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+
+# Install 
+# RUN npx playwright install --with-deps
+
+COPY . .
+# Default command: run all tests
+CMD ["npx", "playwright", "test"]

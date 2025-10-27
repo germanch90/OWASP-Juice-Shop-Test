@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+  juice-shop:
+    image: bkimminich/juice-shop
+    container_name: juice-shop
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test:
+        - CMD
+        - /nodejs/bin/node
+        - -e
+        - "require('http').get('http://127.0.0.1:3000', res => { process.exit(res.statusCode === 200 ? 0 : 1); }).on('error', () => process.exit(1));"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  playwright:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.playwright
+    container_name: playwright-tests
+    depends_on:
+      juice-shop:
+        condition: service_healthy
+    environment:
+      - BASE_URL=http://juice-shop:3000
+      - HEADLESS=true
+    volumes:
+      - ./:/app
+    working_dir: /app

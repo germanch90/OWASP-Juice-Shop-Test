@@ -87,19 +87,22 @@ README.md
 
 ## Quick Start
 
-1. **Start the target app**
+1. **Build the stack** (from the repo root)
    ```bash
-   docker run --rm -p 3000:3000 bkimminich/juice-shop
+   docker compose build
    ```
-2. **Install & run tests**
+2. **Start the target app (TUT)**
    ```bash
-   npm install
-   npx playwright test
+   docker compose up -d juice-shop
    ```
-3. **View results**
+3. **Run the Playwright suite**
+   ```bash
+   docker compose run --rm playwright
+   ```
+4. **View results (WIP)**
    - `playwright-report/index.html` → interactive HTML report  
    - `test-results/` → traces & screenshots  
-   - `playwright-results.json` → AI-ready output  
+   - `playwright-results.json` → AI-ready output
 
 ---
 
@@ -107,7 +110,7 @@ README.md
 Environment variables (`.env`):
 ```env
 BASE_URL=http://localhost:3000
-AI_EVAL_POST_URL=       # optional; when set, results are POSTed
+AI_EVAL_POST_URL=       # optional; when set, results are POSTed [WIP]
 HEADLESS=true
 LOCALE=en
 ```
