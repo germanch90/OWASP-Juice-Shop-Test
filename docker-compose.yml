@@ -1,4 +1,23 @@
 version: "3.9"
+
+x-playwright-base: &playwright-base
+  build:
+    context: .
+    dockerfile: docker/Dockerfile.playwright
+  depends_on:
+    juice-shop:
+      condition: service_healthy
+  env_file:
+    - .env
+  environment:
+    BASE_URL: ${BASE_URL:-http://juice-shop:3000}
+    HEADLESS: ${HEADLESS:-true}
+  volumes:
+    - ./:/app
+    - playwright-node-modules:/app/node_modules
+  user: "${PLAYWRIGHT_UID:-0}:${PLAYWRIGHT_GID:-0}"
+  working_dir: /app
+
 services:
   juice-shop:
     image: bkimminich/juice-shop
@@ -16,17 +35,18 @@ services:
       retries: 5
 
   playwright:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile.playwright
+    <<: *playwright-base
     container_name: playwright-tests
-    depends_on:
-      juice-shop:
-        condition: service_healthy
-    env_file:
-      - .env
-    environment:
-      - BASE_URL=http://juice-shop:3000
-      - HEADLESS=true
-    volumes:
-      - ./:/app
+    command: ["npx", "playwright", "test"]
+
+  playwright-dev:
+    <<: *playwright-base
+    container_name: playwright-dev
+    profiles:
+      - dev
+    command: ["sleep", "infinity"]
+    stdin_open: true
+    tty: true
+
+volumes:
+  playwright-node-modules: {}

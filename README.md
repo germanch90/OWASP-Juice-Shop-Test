@@ -108,6 +108,19 @@ README.md
    - `test-results/` → traces & screenshots  
    - `playwright-results.json` → AI-ready output
 
+Compose mounts the repo for live edits and uses a named volume (`playwright-node-modules`) so dependencies installed during the image build stay available inside the container—no need to run `npm install` on the host.
+
+**Dev container workflow**
+- Start the idle Playwright container for IDE/debugging:
+  ```bash
+  docker compose --profile dev up -d juice-shop playwright-dev
+  ```
+- Attach VS Code (Remote Containers) to `playwright-dev` and run or debug tests inside.
+- Stop when done:
+  ```bash
+  docker compose --profile dev down
+  ```
+
 ---
 
 ## Configuration
@@ -116,12 +129,16 @@ Environment variables (`.env`):
 BASE_URL=http://juice-shop:3000
 AI_EVAL_POST_URL=       # optional; when set, results are POSTed [WIP]
 HEADLESS=true
+PLAYWRIGHT_UID=1000
+PLAYWRIGHT_GID=1000
 LOCALE=en
 ```
 
 Setting `HEADLESS=false` keeps browsers in headed mode inside the container. Because the Playwright image renders to a virtual display (not your desktop), you will not see a window pop up even though a full browser is running; rely on Playwright traces or videos for visibility. Leave the value at `true` for lighter CI runs unless a scenario explicitly needs full browser chrome/behavior.
 
 `BASE_URL` defaults to the Compose service address (`juice-shop:3000`). If you run the tests against a locally exposed instance instead of the Compose service, update this value to `http://localhost:3000`.
+
+`PLAYWRIGHT_UID` / `PLAYWRIGHT_GID` let the container run Playwright with your host user/group IDs so generated artifacts (reports, traces) stay writable. Set them to `$(id -u)` / `$(id -g)` before bringing the stack up if your system uses different IDs.
 
 ---
 
