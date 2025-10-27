@@ -6,7 +6,7 @@ COPY package*.json ./
 RUN npm ci
 
 # Install 
-# RUN npx playwright install --with-deps
+RUN npx playwright install --with-deps
 
 COPY . .
 # Default command: run all tests

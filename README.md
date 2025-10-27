@@ -87,19 +87,23 @@ README.md
 
 ## Quick Start
 
-1. **Build the stack** (from the repo root)
+1. **Prepare environment variables**
+   ```bash
+   cp .env.example .env
+   ```
+2. **Build the stack** (from the repo root)
    ```bash
    docker compose build
    ```
-2. **Start the target app (TUT)**
+3. **Start the target app (TUT)**
    ```bash
    docker compose up -d juice-shop
    ```
-3. **Run the Playwright suite**
+4. **Run the Playwright suite**
    ```bash
    docker compose run --rm playwright
    ```
-4. **View results (WIP)**
+5. **View results (WIP)**
    - `playwright-report/index.html` → interactive HTML report  
    - `test-results/` → traces & screenshots  
    - `playwright-results.json` → AI-ready output
@@ -109,11 +113,15 @@ README.md
 ## Configuration
 Environment variables (`.env`):
 ```env
-BASE_URL=http://localhost:3000
+BASE_URL=http://juice-shop:3000
 AI_EVAL_POST_URL=       # optional; when set, results are POSTed [WIP]
 HEADLESS=true
 LOCALE=en
 ```
+
+Setting `HEADLESS=false` keeps browsers in headed mode inside the container. Because the Playwright image renders to a virtual display (not your desktop), you will not see a window pop up even though a full browser is running; rely on Playwright traces or videos for visibility. Leave the value at `true` for lighter CI runs unless a scenario explicitly needs full browser chrome/behavior.
+
+`BASE_URL` defaults to the Compose service address (`juice-shop:3000`). If you run the tests against a locally exposed instance instead of the Compose service, update this value to `http://localhost:3000`.
 
 ---
 

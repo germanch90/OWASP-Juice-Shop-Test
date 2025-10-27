@@ -23,9 +23,10 @@ services:
     depends_on:
       juice-shop:
         condition: service_healthy
+    env_file:
+      - .env
     environment:
       - BASE_URL=http://juice-shop:3000
       - HEADLESS=true
     volumes:
       - ./:/app
-    working_dir: /app
